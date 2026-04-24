@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<robot name="armaan_robo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="pi_const" value="3.14159265"/>
+
+    <xacro:property name="b" value="0.3"/>
+   
+
+    <joint name="lidar_joint" type="fixed">
+        <parent link="box_link"/>
+        <child link="lidar_link"/>
+        <origin xyz="0.36  0 ${b/2+0.05}" rpy="0 0 0"/>
+    </joint>
+
+
+    <link name="lidar_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.10"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.10"/>
+            </geometry>
+        </collision>
+            
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <mass value="0.1"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+        </inertial>
+    </link>
+
+     <joint name="imu_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="box_link"/>
+        <child link="imu_link" />
+    </joint>
+
+    <link name="imu_link" />
+
+     <gazebo reference="imu_link">
+        <sensor name="imu" type="imu">
+        <always_on>true</always_on>
+        <update_rate>200</update_rate>
+        <visualize>true</visualize>
+        <topic>imu</topic>
+        <enable_metrics>true</enable_metrics>
+        <gz_frame_id>imu_link</gz_frame_id>
+        </sensor>
+    </gazebo>
+
+
+    <gazebo reference="lidar_link">
+        <sensor name="laser" type="gpu_lidar">
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+            <always_on>1</always_on>
+            <update_rate>30</update_rate>
+            <topic>scan</topic>
+            <gz_frame_id>lidar_link</gz_frame_id>
+            <lidar>
+                <scan>
+                    <horizontal>
+                        <samples>720</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.3</min>
+                    <max>12.0</max>
+                </range>
+                 <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+                <frame_id>lidar_link</frame_id>
+            </lidar>
+        </sensor>
+    </gazebo>
+
+</robot>  

@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="r" value="0.15"/>
+    <xacro:property name="b" value="0.3"/>
+    <gazebo reference="box_link">
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="1wheel_link">
+        <mu1>1.5</mu1>
+        <mu2>1.5</mu2>
+        <kp>100000.0</kp>
+        <kd>1.0</kd>
+        <slip1>0.0</slip1>
+        <slip2>0.0</slip2>
+        <material>Gazebo/Turquoise</material>
+    </gazebo>
+
+    <gazebo reference="2wheel_link">
+        <mu1>1.5</mu1>
+        <mu2>1.5</mu2>
+        <kp>100000.0</kp>
+        <kd>1.0</kd>
+        <slip1>0.0</slip1>
+        <slip2>0.0</slip2>
+        <material>Gazebo/Turquoise</material> 
+    </gazebo>
+
+    <gazebo reference="caster_link">
+        <mu1>0.0001</mu1>
+        <mu2>0.0001</mu2>
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="lidar_link">
+        <mu1>0.0001</mu1>
+        <mu2>0.0001</mu2>
+        <material>Gazebo/Red</material>
+    </gazebo>
+    
+    <gazebo>
+        <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <right_joint>wheel_joint</right_joint> 
+            <left_joint>2wheel_joint</left_joint>   
+
+            <wheel_separation>${b}</wheel_separation>
+            <wheel_radius>0.15</wheel_radius>
+
+            <max_linear_acceleration>10</max_linear_acceleration>
+
+            <topic>/cmd_vel</topic>
+            
+        </plugin> 
+
+        <plugin
+        filename="gz-sim-odometry-publisher-system"
+        name="gz::sim::systems::OdometryPublisher">
+        <odom_frame>odom</odom_frame>
+        <robot_base_frame>base_fixx</robot_base_frame>
+        <odom_publish_frequency>50</odom_publish_frequency>
+        <odom_topic>/odom</odom_topic>
+        <tf_topic>/tf</tf_topic>
+        <dimensions>2</dimensions>
+        </plugin>
+
+        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+            <topic>joint_states</topic>
+            <joint_name>wheel_joint</joint_name>
+            <joint_name>2wheel_joint</joint_name>
+        </plugin>
+
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+
+    </gazebo>
+</robot> 
